@@ -21,6 +21,8 @@ namespace KioskKassa
         [DllImport("user32.dll")]
         static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+        // In the project properties, the output type was set to Windows Application.
+        // If it is set to Console Application, the Console remains visible.
 
         static void Main(string[] args)
         {
@@ -48,14 +50,21 @@ namespace KioskKassa
                 Console.Write(exception.ToString());
             }
 
-            tellerProcess = new Process();
-            tellerProcess.StartInfo.WorkingDirectory = @"C:\Windows\System32";
-            tellerProcess.StartInfo.FileName = "notepad.exe";
-            tellerProcess.StartInfo.Arguments = "";
-            tellerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-            tellerProcess.EnableRaisingEvents = true;
-            tellerProcess.Exited += new EventHandler(ProcessExited);
-            tellerProcess.Start();
+            try
+            {
+                tellerProcess = new Process();
+                tellerProcess.StartInfo.WorkingDirectory = @"C:\Windows\System32";
+                tellerProcess.StartInfo.FileName = "notepad.exe";
+                tellerProcess.StartInfo.Arguments = "";
+                tellerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+                tellerProcess.EnableRaisingEvents = true;
+                tellerProcess.Exited += new EventHandler(ProcessExited);
+                tellerProcess.Start();
+            }
+            catch (Exception exception)
+            {
+                Console.Write(exception.ToString());
+            }
 
 
             while (true)
