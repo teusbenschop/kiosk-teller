@@ -31,14 +31,16 @@ namespace KioskKassa
             try
             {
                 RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                if (registryKey.GetValue("KioskKassa") == null)
+
+                string registryValue = registryKey.GetValue("KioskKassa").ToString();
+                if (registryValue == Assembly.GetExecutingAssembly().Location)
                 {
-                    Console.WriteLine("Setting autostart on");
-                    registryKey.SetValue("KioskKassa", Assembly.GetExecutingAssembly().Location);
+                    Console.WriteLine("Autostart is on");
                 }
                 else
                 {
-                    Console.WriteLine("Autostart is on");
+                    Console.WriteLine("Setting autostart on");
+                    registryKey.SetValue("KioskKassa", Assembly.GetExecutingAssembly().Location);
                 }
             }
             catch (Exception exception)
@@ -55,9 +57,9 @@ namespace KioskKassa
             tellerProcess.Exited += new EventHandler(ProcessExited);
             tellerProcess.Start();
 
+
             while (true)
             {
-                //Console.WriteLine(DateTime.Now.ToString());
                 Thread.Sleep(1000);
                 tellerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
 
