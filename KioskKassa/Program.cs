@@ -53,8 +53,8 @@ namespace KioskKassa
             try
             {
                 tellerProcess = new Process();
-                tellerProcess.StartInfo.WorkingDirectory = @"C:\Windows\System32";
-                tellerProcess.StartInfo.FileName = "notepad.exe";
+                tellerProcess.StartInfo.WorkingDirectory = @"C:\Program Files (x86)\MplusKASSA\bin";
+                tellerProcess.StartInfo.FileName = "MplusQ.exe";
                 tellerProcess.StartInfo.Arguments = "";
                 tellerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
                 tellerProcess.EnableRaisingEvents = true;
