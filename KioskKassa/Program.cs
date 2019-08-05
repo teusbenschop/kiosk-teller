@@ -70,6 +70,7 @@ namespace KioskKassa
             while (true)
             {
                 Thread.Sleep(1000);
+
                 tellerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
 
                 try
