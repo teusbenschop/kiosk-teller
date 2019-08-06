@@ -15,11 +15,13 @@ namespace KioskKassa
     {
         private static Process tellerProcess;
 
+        private static int actionDelayMilliseconds = 60000;
+
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         [DllImport("user32.dll")]
-        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
         // In the project properties, the output type was set to Windows Application.
         // If it is set to Console Application, the Console remains visible.
@@ -50,10 +52,13 @@ namespace KioskKassa
                 Console.Write(exception.ToString());
             }
 
+            Thread thread = new Thread(shortenDelay);
+            thread.Start();
+
             try
             {
                 tellerProcess = new Process();
-                tellerProcess.StartInfo.WorkingDirectory = @"C:\Program Files (x86)\MplusKASSA\bin";
+                tellerProcess.StartInfo.WorkingDirectory = @"C:\Program Files (x86)\Mplus Software\MplusKASSA\bin";
                 tellerProcess.StartInfo.FileName = "MplusQ.exe";
                 tellerProcess.StartInfo.Arguments = "";
                 tellerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
@@ -69,8 +74,6 @@ namespace KioskKassa
 
             while (true)
             {
-                Thread.Sleep(1000);
-
                 tellerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
 
                 try
@@ -82,9 +85,9 @@ namespace KioskKassa
 
                     IntPtr HWND_TOPMOST = new IntPtr(-1);
                     const UInt32 SWP_NOSIZE = 0x0001;
-                    const UInt32 SWP_NOMOVE = 0x0002;
+                    //const UInt32 SWP_NOMOVE = 0x0002;
                     const UInt32 SWP_SHOWWINDOW = 0x0040;
-                    SetWindowPos(windowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                    SetWindowPos(windowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
 
                     /*
                     Process[] processes = Process.GetProcessesByName("Microsoft Edge");
@@ -97,6 +100,9 @@ namespace KioskKassa
                 catch (Exception)
                 {
                 }
+
+                Thread.Sleep(actionDelayMilliseconds);
+
             }
 
         }
@@ -108,8 +114,19 @@ namespace KioskKassa
 
         private static void ProcessExited(object sender, System.EventArgs e)
         {
-            // When the teller process exits or crashes, restart it straightaway.
+            Console.WriteLine("Process exited");
+            // Delay shortly, to avoid endless loops that slow down the system.
+            Thread.Sleep(actionDelayMilliseconds);
+            // When the teller process exits or crashes, restart it again.
+            Console.WriteLine("Restart process");
             tellerProcess.Start();
+        }
+
+        private static void shortenDelay ()
+        {
+            Thread.Sleep(actionDelayMilliseconds);
+            Console.WriteLine("Set action response time to one second");
+            actionDelayMilliseconds = 1000;
         }
     }
 }
