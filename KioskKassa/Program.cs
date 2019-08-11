@@ -89,16 +89,22 @@ namespace KioskKassa
                     const UInt32 SWP_SHOWWINDOW = 0x0040;
                     SetWindowPos(windowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
 
-                    /*
-                    Process[] processes = Process.GetProcessesByName("Microsoft Edge");
+                    Process[] processes = Process.GetProcessesByName("iexplore");
                     foreach (Process process in processes)
                     {
+                        Console.WriteLine("Terminating " + process.ProcessName);
                         process.Kill();
                     }
-                    */
+                    processes = Process.GetProcessesByName("MicrosoftEdge");
+                    foreach (Process process in processes)
+                    {
+                        Console.WriteLine("Terminating " + process.ProcessName);
+                        process.Kill();
+                    }
                 }
-                catch (Exception)
+                catch (Exception exception)
                 {
+                    Console.WriteLine(exception.Message);
                 }
 
                 Thread.Sleep(actionDelayMilliseconds);
