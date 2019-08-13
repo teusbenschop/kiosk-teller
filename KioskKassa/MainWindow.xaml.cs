@@ -16,6 +16,8 @@ namespace KioskKassa
         private Timer exitTimer;
         private Timer restartTimer;
         private Timer monitorTimer;
+        private Timer feedbackTimer;
+        private String feedbackMessage = String.Empty;
         private Boolean windowIsActive = false;
 
         private Process tellerProcess;
@@ -33,6 +35,7 @@ namespace KioskKassa
             autostart();
             startTeller();
             startMonitor();
+            feedbackStart();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -53,27 +56,6 @@ namespace KioskKassa
                     this.feedback("Schakelt uit");
                 }
                 code = String.Empty;
-            }
-        }
-
-        private void feedback (String message)
-        {
-            feedbackUI(message);
-        }
-
-        private void feedbackUI (String message)
-        {
-            try
-            {
-                if (Label3.Content.ToString().Length > 4)
-                {
-                    Label1.Content = Label2.Content;
-                    Label2.Content = Label3.Content;
-                }
-                Label3.Content = message;
-            }
-            catch (Exception)
-            {
             }
         }
 
@@ -212,6 +194,52 @@ namespace KioskKassa
             }
 
         }
+
+        private void feedbackStart ()
+        {
+            feedbackTimer = new Timer(100);
+            feedbackTimer.Elapsed += feedbackRun;
+            feedbackTimer.AutoReset = true;
+            feedbackTimer.Start();
+        }
+
+        private void feedbackRun(Object obj, ElapsedEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(feedbackMessage))
+            {
+                try
+                {
+                    if (Label3.Content.ToString().Length > 4)
+                    {
+                        Label1.Content = Label2.Content;
+                        Label2.Content = Label3.Content;
+                    }
+                    Label3.Content = feedbackMessage;
+                }
+                catch (Exception)
+                {
+                }
+                feedbackMessage = String.Empty;
+            }
+        }
+
+        private void feedback(String message)
+        {
+            feedbackMessage = message;
+            try
+            {
+                if (Label3.Content.ToString().Length > 4)
+                {
+                    Label1.Content = Label2.Content;
+                    Label2.Content = Label3.Content;
+                }
+                Label3.Content = feedbackMessage;
+            }
+            catch (Exception)
+            {
+            }
+        }
+
 
     }
 
