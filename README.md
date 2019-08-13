@@ -1,8 +1,8 @@
 # kiosk-teller
 Start teller application in kiosk mode
 
-To stop this app, type the following in the search bar of Windows:
+To stop this app, enter a numerical code consisting of the day of the month followed by the month number.
+Both numbers will have any leading zeroes.
 
-cmd /C taskkill /F /IM KioskKassa.exe
+For example, on 6 March, the code to stop de app is: 0603
 
-Another way to stop the app is to do Alt-Tab through the keyboard, so the app's console is visible, then press Ctrl-C in the console.
