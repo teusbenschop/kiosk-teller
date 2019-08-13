@@ -98,7 +98,7 @@ namespace KioskKassa
             try
             {
                 tellerProcess = new Process();
-                tellerProcess.StartInfo.WorkingDirectory = @"C:\Program Files (x86)\Mplus Software\MplusKASSA\bin";
+                tellerProcess.StartInfo.WorkingDirectory = @"C:\Program Files (x86)\MplusKASSA\bin";
                 tellerProcess.StartInfo.FileName = "MplusQ.exe";
                 tellerProcess.StartInfo.Arguments = "";
                 tellerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
@@ -108,7 +108,7 @@ namespace KioskKassa
             }
             catch (Exception exception)
             {
-                feedback(exception.ToString());
+                feedback(exception.Message);
             }
         }
 
