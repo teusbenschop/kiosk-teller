@@ -14,13 +14,9 @@ namespace KioskKassa
     {
         private String code = String.Empty;
         private Timer exitTimer;
-        private Timer restartTimer;
         private Timer monitorTimer;
         private Timer feedbackTimer;
         private String feedbackMessage = String.Empty;
-        private Boolean windowIsActive = false;
-
-        private Process tellerProcess;
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -33,7 +29,6 @@ namespace KioskKassa
             InitializeComponent();
             feedback("KioskKassa start");
             autostart();
-            startTeller();
             startMonitor();
             feedbackStart();
         }
@@ -93,62 +88,6 @@ namespace KioskKassa
             }
         }
 
-        private void startTeller()
-        {
-            try
-            {
-                tellerProcess = new Process();
-                tellerProcess.StartInfo.WorkingDirectory = @"C:\Program Files (x86)\MplusKASSA\bin";
-                tellerProcess.StartInfo.FileName = "MplusQ.exe";
-                tellerProcess.StartInfo.Arguments = "";
-                tellerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-                tellerProcess.EnableRaisingEvents = true;
-                tellerProcess.Exited += new EventHandler(tellerExited);
-                tellerProcess.Start();
-            }
-            catch (Exception exception)
-            {
-                feedback(exception.Message);
-            }
-        }
-
-        private void tellerExited(object sender, System.EventArgs e)
-        {
-            feedback("Kassa is gestopt");
-            // Delay shortly, to avoid endless loops that slow down the system.
-            restartTimer = new System.Timers.Timer(1000);
-            restartTimer.AutoReset = false;
-            restartTimer.Elapsed += restartTimeout;
-            restartTimer.Start();
-        }
-
-
-        private void restartTimeout(Object obj, ElapsedEventArgs e)
-        {
-            if (windowIsActive)
-            {
-                // If the KioskKassa is active, postpone restarting the Teller app.
-                restartTimer = new System.Timers.Timer(1000);
-                restartTimer.AutoReset = false;
-                restartTimer.Elapsed += restartTimeout;
-                restartTimer.Start();
-            }
-            else
-            {
-                // When the teller process exits or crashes, restart it again.
-                tellerProcess.Start();
-            }
-        }
-
-        private void Window_Activated(object sender, EventArgs e)
-        {
-            windowIsActive = true;
-        }
-
-        private void Window_Deactivated(object sender, EventArgs e)
-        {
-            windowIsActive = false;
-        }
 
         private void startMonitor ()
         {
@@ -158,41 +97,49 @@ namespace KioskKassa
             monitorTimer.Start();
         }
 
+
         private void monitorRun(Object obj, ElapsedEventArgs e)
         {
-            tellerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-
-            try
+            Process[] processes = Process.GetProcesses();
+            foreach (Process process in processes)
             {
-                IntPtr windowHandle = tellerProcess.MainWindowHandle;
-
-                const int SW_MAXIMIZE = 3;
-                ShowWindow(windowHandle, SW_MAXIMIZE);
-
-                IntPtr HWND_TOPMOST = new IntPtr(-1);
-                const UInt32 SWP_NOSIZE = 0x0001;
-                //const UInt32 SWP_NOMOVE = 0x0002;
-                const UInt32 SWP_SHOWWINDOW = 0x0040;
-                SetWindowPos(windowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
-
-                Process[] processes = Process.GetProcessesByName("iexplore");
-                foreach (Process process in processes)
+                try
                 {
-                    feedback("Terminating " + process.ProcessName);
-                    process.Kill();
-                }
-                processes = Process.GetProcessesByName("MicrosoftEdge");
-                foreach (Process process in processes)
-                {
-                    feedback("Terminating " + process.ProcessName);
-                    process.Kill();
-                }
-            }
-            catch (Exception exception)
-            {
-                feedback(exception.Message);
-            }
+                    // Console.WriteLine(process.ProcessName);
+                    if (process.ProcessName == "MplusQ")
+                    {
+                        process.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
 
+                        IntPtr windowHandle = process.MainWindowHandle;
+
+                        const int SW_MAXIMIZE = 3;
+                        ShowWindow(windowHandle, SW_MAXIMIZE);
+
+                        IntPtr HWND_TOPMOST = new IntPtr(-1);
+                        const UInt32 SWP_NOSIZE = 0x0001;
+                        //const UInt32 SWP_NOMOVE = 0x0002;
+                        const UInt32 SWP_SHOWWINDOW = 0x0040;
+                        SetWindowPos(windowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
+                    }
+
+                    if (process.ProcessName == "iexplore")
+                    {
+                        feedback("Terminating " + process.ProcessName);
+                        process.Kill();
+                    }
+
+                    if (process.ProcessName == "MicrosoftEdge")
+                    {
+                        feedback("Terminating " + process.ProcessName);
+                        process.Kill();
+                    }
+                }
+                catch (Exception exception)
+                {
+                    feedback(exception.Message);
+                }
+
+            }
         }
 
         private void feedbackStart ()
