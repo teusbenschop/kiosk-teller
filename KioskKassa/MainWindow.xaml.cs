@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace KioskKassa
 {
@@ -15,8 +16,9 @@ namespace KioskKassa
         private String code = String.Empty;
         private Timer exitTimer;
         private Timer monitorTimer;
-        private Timer feedbackTimer;
+        private DispatcherTimer dispatcherTimer;
         private String feedbackMessage = String.Empty;
+        private Boolean coverScreen = false;
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -100,6 +102,9 @@ namespace KioskKassa
 
         private void monitorRun(Object obj, ElapsedEventArgs e)
         {
+            // Whether MplusKASSA is running.
+            bool mPlusKassaIsRunning = false;
+
             Process[] processes = Process.GetProcesses();
             foreach (Process process in processes)
             {
@@ -108,6 +113,8 @@ namespace KioskKassa
                     // Console.WriteLine(process.ProcessName);
                     if (process.ProcessName == "MplusQ")
                     {
+                        mPlusKassaIsRunning = true;
+
                         process.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
 
                         IntPtr windowHandle = process.MainWindowHandle;
@@ -140,17 +147,26 @@ namespace KioskKassa
                 }
 
             }
+
+            // If MplusKASSA does not run, 
+            // then set this application, KioskKassa, fullscreen.
+            // The purpose of this is that it then prevents the user
+            // from making setting and starting other apps.
+            if (!mPlusKassaIsRunning)
+            {
+                coverScreen = true;
+            }
         }
 
         private void feedbackStart ()
         {
-            feedbackTimer = new Timer(100);
-            feedbackTimer.Elapsed += feedbackRun;
-            feedbackTimer.AutoReset = true;
-            feedbackTimer.Start();
+            dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimerTick);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
         }
 
-        private void feedbackRun(Object obj, ElapsedEventArgs e)
+        private void dispatcherTimerTick(Object obj, EventArgs e)
         {
             if (!String.IsNullOrEmpty(feedbackMessage))
             {
@@ -168,23 +184,17 @@ namespace KioskKassa
                 }
                 feedbackMessage = String.Empty;
             }
+            if (coverScreen)
+            {
+                WindowState = WindowState.Maximized;
+                Topmost = true;
+                coverScreen = false;
+            }
         }
 
         private void feedback(String message)
         {
             feedbackMessage = message;
-            try
-            {
-                if (Label3.Content.ToString().Length > 4)
-                {
-                    Label1.Content = Label2.Content;
-                    Label2.Content = Label3.Content;
-                }
-                Label3.Content = feedbackMessage;
-            }
-            catch (Exception)
-            {
-            }
         }
 
 
