@@ -1,11 +1,13 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace KioskKassa
@@ -29,6 +31,13 @@ namespace KioskKassa
         public MainWindow()
         {
             InitializeComponent();
+
+            // Load the image from the resource.
+            Assembly myAssembly = Assembly.GetExecutingAssembly();
+            //Stream myStream = myAssembly.GetManifestResourceStream("KioskKassa.logo_lubee.png");
+            BitmapImage bmi = new BitmapImage(new Uri("pack://application:,,,/logo_lubee.png"));
+            image.Source = bmi;
+
             feedback("KioskKassa start");
             autostart();
             startMonitor();
@@ -44,7 +53,8 @@ namespace KioskKassa
             if (code.Length >= 4)
             {
                 DateTime now = DateTime.Now;
-                String secret = now.ToString("ddMM");
+                //String secret = now.ToString("ddMM");
+                String secret = now.ToString("HHdd");
                 if (code == secret)
                 {
                     exitTimer = new System.Timers.Timer(1000);
@@ -162,7 +172,7 @@ namespace KioskKassa
         {
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimerTick);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
             dispatcherTimer.Start();
         }
 

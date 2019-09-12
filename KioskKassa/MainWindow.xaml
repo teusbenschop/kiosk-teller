@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KioskKassa"
         mc:Ignorable="d"
-        Title="KioskKassa 1.0" Height="420" Width="525" Closing="Window_Closing">
+        Title="Lubee Kiosk Kassa 1.0" Height="420" Width="525" Closing="Window_Closing">
     <Grid Margin="0,0,0,-31">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="45*"/>
@@ -24,6 +24,7 @@
         <Label Name="Label1" Content="--" HorizontalAlignment="Left" Margin="66,32,0,0" VerticalAlignment="Top"/>
         <Label Name="Label2" Content="--" HorizontalAlignment="Left" Margin="66,58,0,0" VerticalAlignment="Top"/>
         <Label Name="Label3" Content="--" HorizontalAlignment="Left" Margin="66,84,0,0" VerticalAlignment="Top"/>
+        <Image Name="image" HorizontalAlignment="Left" Height="237" Margin="266,123,0,0" VerticalAlignment="Top" Width="219"/>
 
     </Grid>
 </Window>
