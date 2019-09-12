@@ -24,7 +24,7 @@
         <Label Name="Label1" Content="--" HorizontalAlignment="Left" Margin="66,32,0,0" VerticalAlignment="Top"/>
         <Label Name="Label2" Content="--" HorizontalAlignment="Left" Margin="66,58,0,0" VerticalAlignment="Top"/>
         <Label Name="Label3" Content="--" HorizontalAlignment="Left" Margin="66,84,0,0" VerticalAlignment="Top"/>
-        <Image Name="image" HorizontalAlignment="Left" Height="237" Margin="266,123,0,0" VerticalAlignment="Top" Width="219"/>
+        <Image Name="image" HorizontalAlignment="Stretch" Margin="260,125,50,125" VerticalAlignment="Stretch"/>
 
     </Grid>
 </Window>
