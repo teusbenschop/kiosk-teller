@@ -11,7 +11,7 @@ When a user starts Internet Explorer or Microsoft Edge, KioskKassa.exe will term
 
 To stop KioskKassa.exe, do the following:
 1. Close MplusQ.exe.
-2. In KioskKassa.exe, enter a numerical code consisting of the day of the month followed by the month number. Both numbers will have any leading zeroes. For example, on 6 March, the code to stop de app is: 0603
+2. In KioskKassa.exe, enter a numerical code consisting of the current hour followed by the day of the month. Both numbers will have any leading zeroes. For example, on 6 March 13:00, the code to stop de app is: 1306
 3. The KioskKassa.exe will terminate.
 
 Some useful commands to run for support:
