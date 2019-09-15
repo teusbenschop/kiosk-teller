@@ -38,7 +38,6 @@ namespace KioskKassa
             image.Source = bmi;
 
             feedback("KioskKassa start");
-            autostart();
             startMonitor();
             feedbackStart();
         }
@@ -75,29 +74,6 @@ namespace KioskKassa
             feedback("Programma sluit niet");
             e.Cancel = true;
         }
-
-        private void autostart()
-        {
-            try
-            {
-                RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
-                string registryValue = registryKey.GetValue("KioskKassa").ToString();
-                if (registryValue == Assembly.GetExecutingAssembly().Location)
-                {
-                    feedback("Autostart is on");
-                }
-                else
-                {
-                    feedback("Setting autostart on");
-                    registryKey.SetValue("KioskKassa", Assembly.GetExecutingAssembly().Location);
-                }
-            }
-            catch (Exception)
-            {
-            }
-        }
-
 
         private void startMonitor ()
         {
