@@ -34,7 +34,6 @@ namespace KioskKassa
 
             // Load the image from the resource.
             Assembly myAssembly = Assembly.GetExecutingAssembly();
-            //Stream myStream = myAssembly.GetManifestResourceStream("KioskKassa.logo_lubee.png");
             BitmapImage bmi = new BitmapImage(new Uri("pack://application:,,,/logo_lubee.png"));
             image.Source = bmi;
 
@@ -94,9 +93,8 @@ namespace KioskKassa
                     registryKey.SetValue("KioskKassa", Assembly.GetExecutingAssembly().Location);
                 }
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                feedback(exception.ToString());
             }
         }
 
@@ -151,9 +149,8 @@ namespace KioskKassa
                         process.Kill();
                     }
                 }
-                catch (Exception exception)
+                catch (Exception)
                 {
-                    feedback(exception.Message);
                 }
 
             }
